@@ -13,12 +13,15 @@
         }
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background: #333;
         }
         video {
             border: 1px solid white;
+            width: 100%;
+            height: 70%;
         }
         button {
             margin: 5px;
@@ -34,7 +37,7 @@
 </head>
 
 <body>
-    <video id="video" width="640" height="480" autoplay></video>
+    <video id="video" autoplay></video>
     <button id="startRecording">Start Recording</button>
     <button id="stopRecording" disabled>Stop Recording</button>
 
