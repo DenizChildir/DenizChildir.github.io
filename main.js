@@ -3,6 +3,7 @@ const startRecordingButton = document.getElementById('startRecording');
 const stopRecordingButton = document.getElementById('stopRecording');
 let mediaRecorder;
 let recordedChunks = [];
+let recordInterval;
 
 async function initCamera() {
     try {
@@ -20,6 +21,9 @@ async function initCamera() {
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedChunks = [];
             uploadToFirebase(blob);
+            if (!stopRecordingButton.disabled) {
+                startRecording();
+            }
         };
 
         startRecordingButton.disabled = false;
@@ -28,16 +32,25 @@ async function initCamera() {
     }
 }
 
-startRecordingButton.addEventListener('click', () => {
+function startRecording() {
     mediaRecorder.start();
     startRecordingButton.disabled = true;
     stopRecordingButton.disabled = false;
-});
+    recordInterval = setTimeout(() => {
+        mediaRecorder.stop();
+    }, 60000); // stop recording after 1 minute
+}
+
+startRecordingButton.addEventListener('click', startRecording);
 
 stopRecordingButton.addEventListener('click', () => {
+    clearTimeout(recordInterval);
     mediaRecorder.stop();
     startRecordingButton.disabled = false;
     stopRecordingButton.disabled = true;
+    recordInterval = setTimeout(() => {
+        mediaRecorder.stop();
+    }, 120000); // stop recording after 2 minutes
 });
 
 initCamera();
