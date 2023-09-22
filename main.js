@@ -22,7 +22,7 @@ async function initCamera() {
             recordedChunks = [];
             uploadToFirebase(blob);
             if (!stopRecordingButton.disabled) {
-                startRecording();
+                startNewRecording();
             }
         };
 
@@ -32,25 +32,25 @@ async function initCamera() {
     }
 }
 
-function startRecording() {
+function startNewRecording() {
     mediaRecorder.start();
-    startRecordingButton.disabled = true;
-    stopRecordingButton.disabled = false;
     recordInterval = setTimeout(() => {
         mediaRecorder.stop();
-    }, 60000); // stop recording after 1 minute
+    }, 15000); // stop recording after 15 seconds
 }
 
-startRecordingButton.addEventListener('click', startRecording);
+startRecordingButton.addEventListener('click', () => {
+    startNewRecording();
+    startRecordingButton.disabled = true;
+    stopRecordingButton.disabled = false;
+});
 
 stopRecordingButton.addEventListener('click', () => {
-    clearTimeout(recordInterval);
-    mediaRecorder.stop();
+    clearTimeout(recordInterval); // Clear the existing interval
+    mediaRecorder.stop(); // Stop the current recording
     startRecordingButton.disabled = false;
     stopRecordingButton.disabled = true;
-    recordInterval = setTimeout(() => {
-        mediaRecorder.stop();
-    }, 120000); // stop recording after 2 minutes
 });
 
 initCamera();
+
