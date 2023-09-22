@@ -37,12 +37,14 @@ async function initCamera() {
 }
 
 function startHandler() {
+  console.log('Start button clicked');
   if (isRecording) return;
   isRecording = true;
   startRecording();
 }
 
 function stopHandler() {
+  console.log('Stop button clicked');
   if (!isRecording) return;
   isRecording = false;
   clearTimeout(recordInterval);
