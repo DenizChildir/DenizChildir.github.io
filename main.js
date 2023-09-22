@@ -58,7 +58,7 @@ function startRecording() {
     mediaRecorder.stop();
     processRecording();
     if (isRecording) startRecording(); // If still recording, start a new segment.
-  }, 15000);
+  }, 8000);
 }
 
 function processRecording() {
