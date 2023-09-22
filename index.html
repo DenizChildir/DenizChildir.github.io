@@ -1,34 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Video Recorder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <title>Video Recording PWA</title>
     <style>
-        #video {
-            width: 100%;
-            max-width: 500px;
-            height: auto;
+        body, html {
+            height: 100%;
+            margin: 0;
         }
-        .button-container {
-            margin-top: 10px;
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #333;
+        }
+        video {
+            border: 1px solid white;
+            width: 100%;
+            height: 70%;
         }
         button {
-            padding: 10px 20px;
             margin: 5px;
-            font-size: 16px;
-            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 18px;
         }
     </style>
-</head>
-<body>
-    <video id="video" autoplay playsinline muted></video>
-    <div class="button-container">
-        <button id="startRecording">Start</button>
-        <button id="stopRecording">Stop</button>
-    </div>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
 
-    <script src="https://www.gstatic.com/firebasejs/<version>/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/<version>/firebase-storage.js"></script>
+    <!-- If you enabled Storage -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+</head>
+
+<body>
+    <video id="video" autoplay></video>
+    <button id="startRecording">Start Recording</button>
+    <button id="stopRecording" disabled>Stop Recording</button>
+
     <script src="main.js"></script>
+    <script src="firebase.js"></script>
 </body>
+
 </html>
