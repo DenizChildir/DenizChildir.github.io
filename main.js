@@ -56,7 +56,7 @@ function startNewRecording() {
   mediaRecorder.start();
   recordInterval = setTimeout(() => {
     mediaRecorder.stop();
-  }, 15000); // stop recording after 15 seconds
+  }, 8000); // stop recording after 15 seconds
 }
 
 // Store blob in IndexedDB
