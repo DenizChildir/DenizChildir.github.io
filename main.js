@@ -1,8 +1,11 @@
 const video = document.getElementById('video');
+const startRecordingButton = document.getElementById('startRecording');
+const stopRecordingButton = document.getElementById('stopRecording');
 let mediaRecorder;
 let recordedChunks = [];
 let recordInterval;
 let db;
+let isRecording = false;
 
 // Initialize IndexedDB
 function initDB() {
@@ -24,61 +27,59 @@ async function initCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
     video.srcObject = stream;
     mediaRecorder = new MediaRecorder(stream);
-
     mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        recordedChunks.push(event.data);
-      }
+      if (event.data.size > 0) recordedChunks.push(event.data);
     };
-
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(recordedChunks, { type: 'video/webm' });
-      recordedChunks = [];
-
-      // Store blob in IndexedDB
-      storeBlob(blob);
-
-      // Upload to Firebase
-      uploadToFirebase(blob);
-
-      // Restart the recording automatically
-      startNewRecording();
-    };
-
-    // Start the first recording
-    startNewRecording();
+    mediaRecorder.onstop = stopHandler;
   } catch (error) {
-    console.error('Error accessing camera:', error);
+    console.error('Error accessing the camera:', error);
   }
 }
 
-function startNewRecording() {
+function startHandler() {
+  if (isRecording) return;
+  isRecording = true;
+  startRecording();
+}
+
+function stopHandler() {
+  if (!isRecording) return;
+  isRecording = false;
+  clearTimeout(recordInterval);
+  mediaRecorder.stop();
+  processRecording();
+}
+
+function startRecording() {
+  if (!isRecording) return;
+  recordedChunks = [];
   mediaRecorder.start();
   recordInterval = setTimeout(() => {
     mediaRecorder.stop();
-  }, 8000); // stop recording after 15 seconds
+    processRecording();
+    if (isRecording) startRecording(); // If still recording, start a new segment.
+  }, 15000);
 }
 
-// Store blob in IndexedDB
+function processRecording() {
+  const blob = new Blob(recordedChunks, { type: 'video/webm' });
+  storeBlob(blob);
+  uploadToFirebase(blob);
+}
+
 function storeBlob(blob) {
   const transaction = db.transaction(['videos'], 'readwrite');
   const objectStore = transaction.objectStore('videos');
   objectStore.add(blob);
 }
 
-// Dummy function for uploading to Firebase
-// Replace with actual Firebase upload logic
 function uploadToFirebase(blob) {
-  const storageRef = firebase.storage().ref();
-  const videoRef = storageRef.child(`videos/${new Date().toISOString()}.webm`);
-  
-  videoRef.put(blob).then((snapshot) => {
-    console.log('Uploaded a blob or file!', snapshot);
-  }).catch((error) => {
-    console.error('Upload failed:', error);
-  });
+  // Add the Firebase upload logic here.
+  console.log('Attempt to upload to Firebase');
 }
 
+startRecordingButton.addEventListener('click', startHandler);
+stopRecordingButton.addEventListener('click', stopHandler);
 
 initDB();
 initCamera();
