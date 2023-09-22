@@ -20,7 +20,20 @@ async function initCamera() {
         mediaRecorder.onstop = () => {
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedChunks = [];
+            
+            // Save Blob Locally
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'recorded-video.webm';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            // Upload to Firebase
             uploadToFirebase(blob);
+
             if (!stopRecordingButton.disabled) {
                 startNewRecording();
             }
@@ -36,7 +49,7 @@ function startNewRecording() {
     mediaRecorder.start();
     recordInterval = setTimeout(() => {
         mediaRecorder.stop();
-    }, 15000); // stop recording after 15 seconds
+    }, 8000); // stop recording after 15 seconds
 }
 
 startRecordingButton.addEventListener('click', () => {
@@ -53,4 +66,3 @@ stopRecordingButton.addEventListener('click', () => {
 });
 
 initCamera();
-
