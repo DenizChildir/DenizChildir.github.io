@@ -33,6 +33,7 @@ async function initCamera() {
             audio: true // Request audio stream
         });
         video.srcObject = stream;
+        video.muted = true; // Mute the playback to prevent feedback
 
         // Initialize MediaRecorder with a MIME type that includes audio codec
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9,opus' });
@@ -58,6 +59,7 @@ async function initCamera() {
         console.error('Error accessing camera or microphone:', error);
     }
 }
+
 
 
 function startNewRecording() {
