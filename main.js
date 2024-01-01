@@ -27,9 +27,15 @@ function initDB() {
 
 async function initCamera() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        // Request both video and audio streams
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment' },
+            audio: true // Request audio stream
+        });
         video.srcObject = stream;
-        mediaRecorder = new MediaRecorder(stream);
+
+        // Initialize MediaRecorder with a MIME type that includes audio codec
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9,opus' });
 
         mediaRecorder.ondataavailable = (event) => {
             if (event.data.size > 0) {
@@ -49,9 +55,10 @@ async function initCamera() {
 
         startRecordingButton.disabled = false;
     } catch (error) {
-        console.error('Error accessing camera:', error);
+        console.error('Error accessing camera or microphone:', error);
     }
 }
+
 
 function startNewRecording() {
     mediaRecorder.start();
