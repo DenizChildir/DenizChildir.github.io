@@ -1,4 +1,4 @@
-// Add your Firebase configuration here
+// this is firebase.js
 const firebaseConfig = {
     apiKey: "AIzaSyAsELNkO3f1o9BtdI76K2q8le3BBiFF61I",
     authDomain: "video-2e82c.firebaseapp.com",

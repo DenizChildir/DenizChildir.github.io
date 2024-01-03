@@ -1,3 +1,4 @@
+// this is sw.js
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open('video-recording-pwa').then((cache) => {
