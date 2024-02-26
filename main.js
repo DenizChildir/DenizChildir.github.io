@@ -88,5 +88,17 @@ stopRecordingButton.addEventListener('click', () => {
     stopRecordingButton.disabled = true;
 });
 
+// Generate or retrieve a unique device identifier
+const getDeviceIdentifier = () => {
+    let deviceId = localStorage.getItem('deviceIdentifier');
+    if (!deviceId) {
+        deviceId = 'device-' + Date.now() + '-' + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem('deviceIdentifier', deviceId);
+    }
+    return deviceId;
+};
+
+const deviceIdentifier = getDeviceIdentifier();
+
 initDB(); // Initialize the IndexedDB when the script loads
 initCamera(); // Initialize the camera when the script loads

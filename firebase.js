@@ -11,16 +11,27 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+// function uploadToFirebase(blob) {
+//     const storageRef = firebase.storage().ref();
+//     const uploadTask = storageRef.child('videos/' + new Date().toISOString()).put(blob);
+//
+//     uploadTask.on('state_changed', (snapshot) => {
+//         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//         console.log('Upload is ' + progress + '% done');
+//     }, (error) => {
+//         console.error('Upload failed:', error);
+//     }, () => {
+//         console.log('Upload complete');
+//     });
+// }
+// Updated function to include device-specific path
 function uploadToFirebase(blob) {
     const storageRef = firebase.storage().ref();
-    const uploadTask = storageRef.child('videos/' + new Date().toISOString()).put(blob);
+    const deviceFolder = `videos/${deviceIdentifier}/`; // Use the device identifier in the path
+    const fileName = `video-${new Date().toISOString()}.webm`;
+    const fileRef = storageRef.child(deviceFolder + fileName);
 
-    uploadTask.on('state_changed', (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
-    }, (error) => {
-        console.error('Upload failed:', error);
-    }, () => {
-        console.log('Upload complete');
+    fileRef.put(blob).then((snapshot) => {
+        console.log('Uploaded a blob or file!', snapshot);
     });
 }
